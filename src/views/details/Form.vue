@@ -105,10 +105,10 @@
                     serviceName: [
                         { required: true, message: 'please input service name', trigger: 'blur' }
                     ],
-                    serviceLevelData: [
+                    serviceLevel: [
                         {required: true, message: 'please choose service level', trigger: 'change'}
                     ],
-                    sliceTypeData: [
+                    sliceType: [
                         {required: true, message: 'please choose slice type', trigger: 'change'}
                     ],
                     orderTime: [

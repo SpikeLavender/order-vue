@@ -105,7 +105,7 @@ export default {
       }).then((res) => {
         let statusCode = res.data.statusCode
         console.log(res)
-        if (statusCode == 200) {
+        if (statusCode === "200") {
           this.orders = res.data.data
         } else {
           this.$message({
@@ -138,7 +138,7 @@ export default {
             message: '删除成功',
             type: 'success'
           })
-          this.getUsers()
+          this.getOrders()
         })
       }).catch(() => {
 
