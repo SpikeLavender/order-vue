@@ -1,4 +1,4 @@
-<<template>
+<template>
     <el-row class="container">
         <el-col :span="24" class="header">
             <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
@@ -114,7 +114,7 @@
                 })
             },
             // 利用闭包实现计算属性传参。
-            routeChildren: function (route) {
+            routeChildren: function () {
                 return function (route) {
                     return route.children.filter(function (child) {
                         return !child.hidden
@@ -133,6 +133,7 @@
                 // console.log('handleclose');
             },
             handleselect: function (a, b) {
+                console.log(a, b)
             },
             // 退出登录
             logout: function () {

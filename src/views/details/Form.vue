@@ -72,7 +72,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import { regionDataPlus, CodeToText, TextToCode} from 'element-china-area-data'
     import common from '../../common/common'
     import moment from 'moment'
@@ -124,7 +123,7 @@
                         {required: true, message: 'please choose application', trigger: 'change'}
                     ]
                 },
-                fileList: []
+                fileList: [],
             }
         },
         methods: {
@@ -176,6 +175,25 @@
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
+            async createOrder(data) {
+                let res = await this.$Http.createOrder(data)
+                //todo: 异常处理
+                console.log(res)
+                if (res.statusCode === "200") {
+                    this.$message({
+                        message: 'create order success',
+                        type: 'success'
+                    })
+                    console.log(this.addForm.fee)
+                    this.addForm.fee = res.data.fee
+                    await this.$router.push({ path: '/main' })
+                } else {
+                    this.$message({
+                        message: res.data.message,
+                        type: 'error'
+                    })
+                }
+            },
             onSubmit (formName) {
                 //this.listLoading = true
                 this.$refs[formName].validate((valid) => {
@@ -183,46 +201,9 @@
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addLoading = true
                             let data = Object.assign({}, this.addForm)
-
                             console.log(data)
-                            let ins = axios.create({
-                                baseURL: 'http://127.0.0.1:8090/v1/openapi/',
-                            })
-                            ins.post('/5g-orders', data, {
-                                headers: {
-                                    'token': sessionStorage.getItem('token')
-                                }
-                            }).then(res => {
-                                let statusCode = res.data.statusCode
-                                console.log(res)
-                                if (statusCode === "200") {
-                                    this.$message({
-                                        message: 'create order success',
-                                        type: 'success'
-                                    })
-                                    //this.$refs['addForm'].resetFields()
-                                    //this.addFormVisible = false
-                                    //this.getUsers()
-                                    console.log(this.addForm.fee)
-                                    this.addForm.fee = res.data.data.fee
-                                    //this.resetForm(formName)
-                                    this.$router.push({ path: '/main' })
-                                } else {
-                                    this.$message({
-                                        message: res.data.message,
-                                        type: 'error'
-                                    })
-                                }
-                                console.log(res)
-                                this.addLoading = false
-                            }).catch (error => {
-                                console.log(error)
-                                this.$message({
-                                    message: error,
-                                    type: 'error'
-                                })
-                                this.addLoading = false
-                            })
+                            this.createOrder(data)
+                            this.addLoading = false
                         })
                     }
                 })

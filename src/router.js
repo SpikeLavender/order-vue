@@ -50,15 +50,6 @@ export default new Router({
           { path: '/monitor', component: () => import('./views/details/Monitor.vue'), name: 'Monitor' },
       ]
     },
-    // {
-    //   path: '/',
-    //   component: () => import('./views/Home.vue'),
-    //   name: 'Charts',
-    //   iconCls: 'fa fa-bar-chart',
-    //   children: [
-    //     { path: '/echarts', component: () => import('./views/charts/echarts.vue'), name: 'echarts' }
-    //   ]
-    // },
     {
       path: '*',
       hidden: true,

@@ -54,7 +54,6 @@
 
 <script>
 import moment from 'moment'
-import axios from 'axios'
 export default {
   data () {
     return {
@@ -93,31 +92,11 @@ export default {
       this.getOrders()
     },
     // 获取用户列表
-    getOrders () {
-      this.listLoading = true
-      let ins = axios.create({
-        baseURL: 'http://127.0.0.1:8090/v1/openapi/',
-      })
-      ins.get('/5g-orders', {
-        headers: {
-          'token': sessionStorage.getItem('token')
-        }
-      }).then((res) => {
-        let statusCode = res.data.statusCode
-        console.log(res)
-        if (statusCode === "200") {
-          this.orders = res.data.data
-        } else {
-          this.$message({
-            message: res.data.message,
-            type: 'error'
-          })
-        }
-        // this.total = res.data.total
-        // this.users = res.data.users
-        console.log(res)
-        this.listLoading = false
-      })
+    async getOrders () {
+      //this.listLoading = true
+      let res = await this.$Http.getOrders()
+      //todo: 异常处理
+      this.orders = res.data
     },
     // 删除
     handleDel: function (index, row) {
@@ -129,17 +108,7 @@ export default {
         console.log(row.id)
 
         // todo: 删除和批量删除接口
-        let ins = axios.create({
-          baseURL: 'http://127.0.0.1:8090/v1/openapi/',
-        })
-        axios.delete('/', para).then((res) => {
-          this.listLoading = false
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getOrders()
-        })
+
       }).catch(() => {
 
       })
@@ -155,14 +124,7 @@ export default {
       }).then(() => {
         this.listLoading = true
         let para = { ids: ids }
-        axios.post('/', para).then((res) => {
-          this.listLoading = false
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.getOrders()
-        })
+        console.log(para)
       }).catch(() => {
 
       })

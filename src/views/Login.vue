@@ -16,8 +16,6 @@
 </template>
 
 <script>
-    //import { requestLogin } from '../api/api'
-    import axios from 'axios'
     export default {
         data () {
             return {
@@ -38,10 +36,22 @@
             }
         },
         methods: {
-            // handleReset2 () {
-            //     this.$refs.ruleForm2.resetFields()
-            // },
-            handleSubmit2 () {
+            async login(data) {
+                let res = await this.$Http.login(data)
+                if (res.statusCode !== "200") {
+                    this.$message({
+                        message: res.message,
+                        type: 'error'
+                    })
+                } else {
+                    //this.$store.commit('set_token', res.data.data.token);
+                    sessionStorage.setItem('token', res.data.token)
+                    console.log( 'token :' + res.data.token)
+                    await this.$router.push({ path: '/main' })
+                }
+
+            },
+            async handleSubmit2 () {
                 this.$refs.ruleForm2.validate((valid) => {
                     if (valid) {
                         this.logining = true
@@ -49,24 +59,7 @@
                             username: this.ruleForm2.username,
                             password: this.ruleForm2.password
                         }
-                        let ins = axios.create({
-                            baseURL: 'http://127.0.0.1:8090/v1/openapi/',
-                        })
-                        ins.post('/login',  data).then(res => {
-                            this.logining = false
-                            console.log(res.data.statusCode)
-                            if (res.data.statusCode !== "200") {
-                                this.$message({
-                                    message: res.data.message,
-                                    type: 'error'
-                                })
-                            } else {
-                                //this.$store.commit('set_token', res.data.data.token);
-                                sessionStorage.setItem('token', res.data.data.token)
-                                console.log(res.data.data.token)
-                                this.$router.push({ path: '/main' })
-                            }
-                        })
+                        this.login(data)
                     } else {
                         console.log('error submit!!')
                         return false
