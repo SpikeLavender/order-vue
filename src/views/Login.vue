@@ -23,8 +23,8 @@
             return {
                 logining: false,
                 ruleForm2: {
-                    username: 'admin',
-                    password: '123456'
+                    username: 'hetengjiao',
+                    password: 'hetengjiao'
                 },
                 rules2: {
                     username: [
@@ -61,9 +61,10 @@
                                     type: 'error'
                                 })
                             } else {
-                                sessionStorage.setItem('Authentication-Token', res.data.data.token)
+                                //this.$store.commit('set_token', res.data.data.token);
+                                sessionStorage.setItem('token', res.data.data.token)
                                 console.log(res.data.data.token)
-                                this.$router.push({ path: '/' })
+                                this.$router.push({ path: '/main' })
                             }
                         })
                     } else {

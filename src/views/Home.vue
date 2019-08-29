@@ -14,8 +14,7 @@
                     <span class="el-dropdown-link userinfo-inner"><img :src="this.sysUserAvatar"/> {{sysUserName}}</span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>我的消息</el-dropdown-item>
-                        <el-dropdown-item>设置</el-dropdown-item>
-                        <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+                        <el-dropdown-item divided @click.native="logout">log out</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-col>
@@ -141,7 +140,7 @@
                 this.$confirm('确认退出吗?', '提示', {
                     // type: 'warning'
                 }).then(() => {
-                    sessionStorage.removeItem('user')
+                    sessionStorage.removeItem('Authentication-Token')
                     _this.$router.push('/login')
                 }).catch(() => {
 
@@ -202,11 +201,11 @@
             .logo {
                 height: 60px;
                 font-size: 22px;
-                padding-left: 20px;
+                padding-left: 10px;
                 padding-right: 20px;
                 border-color: rgba(238, 241, 146, 0.3);
                 border-right-width: 1px;
-                border-right-style: solid;
+                border-right-style: none;
 
                 img {
                     width: 40px;
@@ -220,7 +219,7 @@
             }
 
             .logo-width {
-                width: 230px;
+                width: 400px;
             }
 
             .logo-collapse-width {
