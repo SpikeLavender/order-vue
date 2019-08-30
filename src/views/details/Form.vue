@@ -73,19 +73,19 @@
 
 <script>
     import { regionDataPlus, CodeToText, TextToCode} from 'element-china-area-data'
-    import common from '../../common/common'
+    import {SLICE_TYPE, SERVICE_LEVEL, APP_OPTIONS} from '../../common/common'
     import moment from 'moment'
     export default {
         data () {
             return {
                 isDisable: false,
-                serviceLevels: common.serviceLevel,
+                serviceLevels: SERVICE_LEVEL,
                 serviceLevelData: 'Standard',
-                sliceTypes: common.sliceType,
+                sliceTypes: SLICE_TYPE,
                 sliceTypeData: 'eMBB',
                 orderTime: [],
                 areaOptions: [],
-                appOptions: common.appOptions,
+                appOptions: APP_OPTIONS,
                 appSelectData: [],
                 areaSelectData: regionDataPlus,
                 addForm: {
@@ -127,17 +127,31 @@
             }
         },
         methods: {
+            //通过label获取value
+            getValueByLabel: function (name, label) {
+                console.log(name)
+                if (label === undefined || label === null) {
+                    return ''
+                }
+                for (let i in name) {
+                    let e = name[i]
+                    if (e && e.label === label) {
+                        return e.value
+                    }
+                }
+                return ''
+            },
             orderTimeHandler() {
 
                 this.addForm.orderTime = moment(this.orderTime[0]).valueOf()
                     + '|' + moment(this.orderTime[1]).valueOf()
             },
             handleLevel() {
-                this.addForm.serviceLevel = common.getValueByLabel(this.serviceLevels, this.serviceLevelData)
+                this.addForm.serviceLevel = this.getValueByLabel(this.serviceLevels, this.serviceLevelData)
                 console.log(this.addForm.serviceLevel)
             },
             handleType() {
-                this.addForm.sliceType = common.getValueByLabel(this.sliceTypes, this.sliceTypeData)
+                this.addForm.sliceType = this.getValueByLabel(this.sliceTypes, this.sliceTypeData)
                 console.log(this.addForm.sliceType)
             },
             handleChangeArea () {

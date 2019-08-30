@@ -18,6 +18,7 @@ Vue.config.productionTip = false
 
 //把Http挂载到Vue实例上
 Vue.prototype.$Http = Http //全局可用
+//Vue.prototype.$Http = Http //全局可用
 
 //Axios.defaults.headers.common['token'] = store.state.token;
 
