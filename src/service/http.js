@@ -69,7 +69,9 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(res => {
     //请求成功
     console.log(res.data)
-    if (res.data.statusCode <= "200" || res.data.statusCode >= "300") {
+    let statusCode = parseInt(res.data.statusCode)
+    if (statusCode < 200 && statusCode >= 300) {
+        console.log("htj" + res.data)
         Message( {
             message: res.data.message,
             duration: 0,
