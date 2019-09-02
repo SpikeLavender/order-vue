@@ -192,8 +192,8 @@
             async createOrder(data) {
                 let res = await this.$Http.createOrder(data)
                 //todo: 异常处理
-                console.log(res)
-                if (res.statusCode === "200") {
+                if (res !== undefined) {
+                    console.log(res)
                     this.$message({
                         message: 'create order success',
                         type: 'success'
@@ -201,11 +201,6 @@
                     console.log(this.addForm.fee)
                     this.addForm.fee = res.data.fee
                     await this.$router.push({ path: '/main' })
-                } else {
-                    this.$message({
-                        message: res.data.message,
-                        type: 'error'
-                    })
                 }
             },
             onSubmit (formName) {

@@ -1,11 +1,12 @@
 import axios from 'axios'
 import service from './ordersApi'
+import { Message } from 'element-ui'
 
 //service 循环遍历输出不同请求方法
 
 let instance = axios.create({
     baseURL: 'http://127.0.0.1:8090/v1/openapi/',
-    timeout: 1000
+    //timeout: 10000
 })
 
 const Http = {}; //封装请求方法的容器
@@ -68,10 +69,27 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(res => {
     //请求成功
     console.log(res.data)
-    return res.data
+    if (res.data.statusCode <= "200" || res.data.statusCode >= "300") {
+        Message( {
+            message: res.data.message,
+            duration: 0,
+            showClose: true,
+            type: "error",
+            offset: 20
+        })
+    } else {
+        return res.data
+    }
+
 }, (err) => {
     //请求失败
-    console.log(err)
+    Message( {
+        message: err.message,
+        duration: 0,
+        showClose: true,
+        type: "error",
+        offset: 20
+    })
 })
 
 export default Http

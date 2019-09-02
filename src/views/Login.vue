@@ -38,18 +38,12 @@
         methods: {
             async login(data) {
                 let res = await this.$Http.login(data)
-                if (res.statusCode !== "200") {
-                    this.$message({
-                        message: res.message,
-                        type: 'error'
-                    })
-                } else {
-                    //this.$store.commit('set_token', res.data.data.token);
+                if (res !== undefined) {
                     sessionStorage.setItem('token', res.data.token)
                     console.log( 'token :' + res.data.token)
                     await this.$router.push({ path: '/main' })
                 }
-
+                this.logining = false
             },
             async handleSubmit2 () {
                 this.$refs.ruleForm2.validate((valid) => {

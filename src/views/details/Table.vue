@@ -96,7 +96,9 @@ export default {
       //this.listLoading = true
       let res = await this.$Http.getOrders()
       //todo: 异常处理
-      this.orders = res.data
+      if (res !== undefined) {
+        this.orders = res.data
+      }
     },
     // 删除
     handleDel: function (index, row) {
