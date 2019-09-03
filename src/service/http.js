@@ -22,7 +22,6 @@ for (let key in service) {
     ) {
         let newParams = {}
         //content-type是否是form-data判断
-        console.log(params)
         if (params && isFormData) {
             newParams = new FormData()
             for (let key in params) {

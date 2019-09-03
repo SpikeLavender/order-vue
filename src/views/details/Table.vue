@@ -45,7 +45,11 @@
     <!--工具条-->
     <el-col :span="24" class="toolbar">
       <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0" size="small">批量删除</el-button>
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+      <el-pagination layout="prev, pager, next"
+                     @current-change="handleCurrentChange"
+                     :current-page="page"
+                     :page-size="size"
+                     :total="total"
                      style="float:right;">
       </el-pagination>
     </el-col>
@@ -63,6 +67,7 @@ export default {
       orders: [],
       total: 0,
       page: 1,
+      size: 10,
       listLoading: false,
       sels: [], // 列表选中列
 
@@ -88,16 +93,20 @@ export default {
       return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[0]/1).format('YYYY-MM-DD')
     },
     handleCurrentChange (val) {
-      this.page = val
+      this.page = val;
       this.getOrders()
     },
     // 获取用户列表
     async getOrders () {
       //this.listLoading = true
-      let res = await this.$Http.getOrders()
+        let data = {};
+        data.page = this.page;
+        data.size = this.size;
+      let res = await this.$Http.getOrders(data);
       //todo: 异常处理
       if (res !== undefined) {
-        this.orders = res.data
+        this.orders = res.data.orderInfoList;
+        this.total = res.data.total;
       }
     },
     // 删除
@@ -133,7 +142,7 @@ export default {
     }
   },
   mounted () {
-    this.getOrders()
+      this.getOrders()
   }
 }
 
