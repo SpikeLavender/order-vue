@@ -26,6 +26,8 @@
 </template>
 
 <script>
+    import {mapMutations} from "vuex";
+
     export default {
         data () {
             return {
@@ -47,12 +49,17 @@
             }
         },
         methods: {
+            ...mapMutations(['changeLogin']),
             async login(data) {
                 let res = await this.$Http.login(data)
                 if (res !== undefined) {
-                    sessionStorage.setItem('token', res.data.token)
-                    sessionStorage.setItem('username', this.ruleForm2.username)
+                    //sessionStorage.setItem('token', res.data.token)
+                    //sessionStorage.setItem('username', this.ruleForm2.username)
                     //console.log( 'token :' + sessionStorage.getItem('username'))
+                    this.changeLogin({
+                        Authorization: res.data.token,
+                        username: this.ruleForm2.username
+                    });
                     await this.$router.push({ path: '/main' })
                 }
                 this.logining = false

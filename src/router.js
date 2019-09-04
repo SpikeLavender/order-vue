@@ -10,13 +10,13 @@ export default new Router({
     {
       path: '/login',
       component: () => import('./views/Login.vue'),
-      name: '',
+      name: 'login',
       hidden: true
     },
     {
       path: '/404',
       component: () => import('./views/404.vue'),
-      name: '',
+      name: '404',
       hidden: true
     },
     {
@@ -33,7 +33,7 @@ export default new Router({
     {
       path: '/',
       component: () => import('./views/Home.vue'),
-      name: 'Order Manager',
+      name: 'Order',
       leaf: true,
       //iconCls: 'el-icon-shopping-cart-2',
       children: [
@@ -58,12 +58,6 @@ export default new Router({
       ]
     },
     {
-      path: '/table',
-      component: () => import('./views/details/Table.vue'),
-      name: 'Order Manager',
-      hidden: true
-    },
-    {
       path: '/',
       component: () => import('./views/Home.vue'),
       name: 'Service Monitor',
@@ -79,4 +73,4 @@ export default new Router({
       redirect: { path: '/404' }
     }
   ]
-})
+});

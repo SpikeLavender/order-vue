@@ -60,7 +60,7 @@
                 activeIndex2: '1',
                 sysName: 'Business Distribution System',
                 collapsed: false,
-                sysUserName: sessionStorage.getItem('username'),
+                sysUserName: '',
                 sysUserAvatar: '',
                 form: {
                     name: '',
@@ -77,7 +77,7 @@
         computed: {
             // 关于v-for v-if，data里未定义的变量遍历使用计算属性。否则使用v-for v-if配合使用
             routes: function () {
-                console.log("this.$router.options.routes" + this.$router.options.routes.filter)
+                //console.log("this.$router.options.routes" + this.$router.options.routes.filter)
                 return this.$router.options.routes.filter(function (item) {
                     return !item.hidden
                 })
@@ -98,7 +98,8 @@
                 this.$confirm('确认退出吗?', '提示', {
                     // type: 'warning'
                 }).then(() => {
-                    sessionStorage.removeItem('Authentication-Token')
+                    localStorage.removeItem('Authorization');
+                    localStorage.removeItem('username');
                     _this.$router.push('/login')
                 }).catch(() => {
 
@@ -106,12 +107,7 @@
             }
         },
         mounted () {
-            let user = sessionStorage.getItem('user')
-            if (user) {
-                user = JSON.parse(user)
-                this.sysUserName = user.name || ''
-                this.sysUserAvatar = user.avatar || ''
-            }
+            this.sysUserName = this.$store.state.username
         }
     }
 
