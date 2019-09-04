@@ -34,18 +34,41 @@ export default new Router({
       path: '/',
       component: () => import('./views/Home.vue'),
       name: 'Order Manager',
+      leaf: true,
       //iconCls: 'el-icon-shopping-cart-2',
       children: [
-        { path: '/form', iconCls: 'el-icon-edit-outline', component: () => import('./views/details/Form.vue'), name: 'New Order' },
-        { path: '/table', iconCls: 'el-icon-edit-outline', component: () => import('./views/details/Table.vue'), name: 'History Order' },
+        {
+          path: '/order',
+          iconCls: 'el-icon-edit-outline',
+          component: () => import('./views/details/Order.vue'),
+          name: 'Order Manager',
+          children: [
+            {
+              path: '/table',
+              component: () => import('./views/details/Table.vue'),
+              name: 'table' ,
+            },
+            {
+              path: '/form',
+              component: () => import('./views/details/Form.vue'),
+              name: 'form' ,
+            }
+          ]
+        },
       ]
+    },
+    {
+      path: '/table',
+      component: () => import('./views/details/Table.vue'),
+      name: 'Order Manager',
+      hidden: true
     },
     {
       path: '/',
       component: () => import('./views/Home.vue'),
       name: 'Service Monitor',
       //iconCls: 'fa fa-address-card',
-      leaf: false,
+      leaf: true,
       children: [
           { path: '/monitor', component: () => import('./views/details/Monitor.vue'), name: 'Monitor' },
       ]

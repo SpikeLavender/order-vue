@@ -1,24 +1,35 @@
 <template>
-    <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px"
-             class="demo-ruleForm login-container">
-        <h3 class="title">Login</h3>
-        <el-form-item prop="username">
-            <el-input type="text" v-model="ruleForm2.username" auto-complete="off" placeholder="Username"></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-            <el-input type="password" v-model="ruleForm2.password" auto-complete="off" placeholder="Password"></el-input>
-        </el-form-item>
-        <el-form-item style="width:100%;">
-            <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">Login
-            </el-button>
-        </el-form-item>
-    </el-form>
+    <el-row class="container">
+<!--        <el-header :span="24" class="header">-->
+<!--            <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">-->
+<!--                {{collapsed?'':sysName}}-->
+<!--            </el-col>-->
+<!--        </el-header>-->
+        <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px"
+                 class="demo-ruleForm login-container">
+            <h3 class="title">Login</h3>
+            <el-form-item prop="username">
+                <el-input type="text" v-model="ruleForm2.username" auto-complete="off"
+                          placeholder="Username" prefix-icon="el-icon-user">
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+                <el-input type="password" v-model="ruleForm2.password" auto-complete="off"
+                          placeholder="Password" prefix-icon="el-icon-lock"></el-input>
+            </el-form-item>
+            <el-form-item style="width:100%;">
+                <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">Login
+                </el-button>
+            </el-form-item>
+        </el-form>
+    </el-row>
 </template>
 
 <script>
     export default {
         data () {
             return {
+                sysName: 'Business Distribution System',
                 logining: false,
                 ruleForm2: {
                     username: 'hetengjiao',
@@ -40,7 +51,8 @@
                 let res = await this.$Http.login(data)
                 if (res !== undefined) {
                     sessionStorage.setItem('token', res.data.token)
-                    console.log( 'token :' + res.data.token)
+                    sessionStorage.setItem('username', this.ruleForm2.username)
+                    //console.log( 'token :' + sessionStorage.getItem('username'))
                     await this.$router.push({ path: '/main' })
                 }
                 this.logining = false
