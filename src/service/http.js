@@ -5,7 +5,7 @@ import { Message } from 'element-ui'
 //service 循环遍历输出不同请求方法
 
 let instance = axios.create({
-    baseURL: 'http://127.0.0.1:8090/v1/openapi/',
+    baseURL: 'http://127.0.0.1:8080/v1/openapi/',
     //timeout: 10000
 })
 
