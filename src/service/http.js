@@ -1,7 +1,7 @@
 import axios from 'axios'
 import service from './ordersApi'
 import { Message } from 'element-ui'
-
+import store from "../store";
 //service 循环遍历输出不同请求方法
 
 let instance = axios.create({
@@ -55,13 +55,13 @@ for (let key in service) {
 //请求拦截器
 instance.interceptors.request.use(config => {
     //发起请求前做什么
-    if (sessionStorage.getItem('token')) {
-        config.headers.common['token'] = sessionStorage.getItem('token')
+    //添加token
+    if (store.state.Authorization !== null && store.state.Authorization !== '') {
+        config.headers.common['token'] = store.state.Authorization
     }
-    console.log("config: " + config.timeout)
     return config
 }, err => {
-    return err
+    return Promise.reject(err);
 })
 
 //响应拦截器
@@ -69,16 +69,29 @@ instance.interceptors.response.use(res => {
     //请求成功
     console.log(res.data)
     let statusCode = parseInt(res.data.statusCode)
-    if (statusCode < 200 && statusCode >= 300) {
+    if (statusCode < 200 && statusCode >= 500) {
         console.log("htj" + res.data)
         Message( {
-            message: res.data.message,
+            message: "Server Inner Error: please connect to hetengjiao@chinamobile.com",
             duration: 0,
             showClose: true,
             type: "error",
             offset: 20
         })
-    } else {
+    } else if (res.status === 401 || statusCode === 401) {
+        localStorage.removeItem('Authorization');
+        localStorage.removeItem('username');
+        this.$router.push('/login').then(res => {
+                Message( {
+                    message: "Authorization fail, login again",
+                    duration: 1000,
+                    //showClose: true,
+                    type: "error",
+                    offset: 20
+                })
+            }
+        );
+    }else{
         return res.data
     }
 

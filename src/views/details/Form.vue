@@ -1,57 +1,62 @@
 <template>
     <el-form ref="addForm" :model="addForm" :rules="addFormRules" label-width="200px"
-             style="margin:30px;width:60%;min-width:600px;" class="demo-ruleForm">
-        <el-form-item label="Service Name" prop="serviceName" size="small">
-            <el-input v-model="addForm.serviceName" maxlength="30" show-word-limit></el-input>
+             style="margin:auto;width:40%;min-width:400px;" class="demo-ruleForm">
+        <el-form-item label="Service Name: " prop="serviceName" size="medium">
+            <el-input v-model="addForm.serviceName" maxlength="30" show-word-limit
+                      style="margin-left: 40px; width: 100%;"></el-input>
         </el-form-item>
-        <el-form-item label="Service Level" prop="serviceLevel" size="small">
-            <el-radio-group v-model="serviceLevelData" @change="handleLevel">
+        <el-form-item label="Service Level: " prop="serviceLevel" size="medium">
+            <el-radio-group v-model="serviceLevelData" @change="handleLevel"
+                            style="margin-left: 40px;">
                 <el-radio v-for="item in serviceLevels"
                           :label="item.label">
                 </el-radio>
             </el-radio-group>
         </el-form-item>
-        <el-form-item label="Slice Type" prop="sliceType" size="small">
-            <el-radio-group v-model="sliceTypeData" @change="handleType">
+        <el-form-item label="Slice Type: " prop="sliceType" size="medium">
+            <el-radio-group v-model="sliceTypeData" @change="handleType"
+                            style="margin-left: 40px; ">
                 <el-radio v-for="item in sliceTypes"
                           :label="item.label">
                 </el-radio>
             </el-radio-group>
         </el-form-item>
-        <el-form-item label="Order Time" prop="orderTime" size="small">
+        <el-form-item label="Order Time: " prop="orderTime" size="medium" >
             <el-date-picker
                     v-model="orderTime"
                     type="daterange"
                     range-separator=" - "
                     start-placeholder="Start Time"
                     end-placeholder="End Time"
+                    style="margin-left: 40px; width: 100%;"
                     @change="orderTimeHandler">
             </el-date-picker>
         </el-form-item>
-        <el-form-item label="Area List" prop="areaList">
+        <el-form-item label="Area List: " prop="areaList">
             <el-cascader
-                    size="small"
+                    size="medium"
                     :options="areaSelectData"
                     v-model="areaOptions"
+                    style="margin-left: 40px; width: 100%;"
                     @change="handleChangeArea">
             </el-cascader>
         </el-form-item>
-        <el-form-item label="User List" prop="userList" size="small">
+        <el-form-item label="User List: " prop="userList" size="medium">
             <!--todo: upload and parse-->
             <el-upload v-model="addForm.userList"
                        class="upload-demo"
                        action=""
                        :file-list="fileList">
-                <el-button size="small" type="primary" >up load</el-button>
+                <el-button size="medium" type="primary" >up load</el-button>
 <!--                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
             </el-upload>
         </el-form-item>
-        <el-form-item label="Application List" prop="appList" size="small">
+        <el-form-item label="Application List: " prop="appList" size="medium">
             <el-select v-model="appSelectData"
                        multiple
                        collapse-tags
-                       style="margin-left: 20px;"
                        placeholder="Choose Area List"
+                       style="margin-left: 40px; width: 100%;"
                        @change="handleChangeApp">
                 <el-option
                         v-for="item in appOptions"
@@ -61,8 +66,9 @@
                 </el-option>
             </el-select>
         </el-form-item >
-        <el-form-item label="fee" prop="fee" size="small">
-            <i aria-label=""></i>{{addForm.fee}}
+        <el-form-item label="fee: " prop="fee" size="medium">
+            {{addForm.fee}}
+            <i aria-label=""><svg t="1567585708878" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7690" width="20" height="20"><path d="M787.669861 62.749836h-65.742653l-210.480106 375.237589L298.62537 62.749836h-65.917737L454.915321 454.536484H224.561601v49.146496h253.973731v149.487257H224.561601v49.146496h253.973731v257.529684h66.552546V702.316733h257.045387v-49.146496H545.087878v-149.487257h257.045387v-49.146496H567.906187z" fill="#d81e06" p-id="7691"></path></svg></i>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click.native="onSubmit('addForm')" :loading="addLoading" :disabled="isDisable">Subscribe</el-button>
@@ -222,3 +228,19 @@
     }
 
 </script>
+
+<style scoped lang="less">
+    .demo-ruleForm {
+        margin: auto;
+        line-height: inherit;
+        .el-form-item {
+            .el-radio-group {
+                float: left;
+                line-height: inherit;
+                .el-radio {
+                    line-height: inherit;
+                }
+            }
+        }
+    }
+</style>
