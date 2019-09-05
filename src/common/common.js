@@ -1,30 +1,36 @@
 export const SLICE_TYPE = [
     {
         "value": "EMBB",
-        "label": "eMBB"
+        "label": "eMBB",
+        "money": 1.0
     },
     {
         "value": "URLLC",
-        "label": "uRLLC"
+        "label": "uRLLC",
+        "money": 1.5
     },
     {
         "value": "MIOT",
-        "label": "mIoT"
+        "label": "mIoT",
+        "money": 2.5
     }
 ]
 
 export const SERVICE_LEVEL =  [
     {
         "value": "STANDARD",
-        "label": "Standard"
+        "label": "Standard",
+        "money": 10.0
     },
     {
         "value": "GOLDEN",
-        "label": "Golden"
+        "label": "Golden",
+        "money": 20.0
     },
     {
         "value": "DIAMOND",
-        "label": "Diamond"
+        "label": "Diamond",
+        "money": 30.0
     }
 ]
 
@@ -50,4 +56,5 @@ export const APP_OPTIONS = [
         "label": "App 5"
     }
 ]
+
 

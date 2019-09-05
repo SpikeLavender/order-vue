@@ -78,9 +78,10 @@
 </template>
 
 <script>
-    import { regionDataPlus, CodeToText, TextToCode} from 'element-china-area-data'
-    import {SLICE_TYPE, SERVICE_LEVEL, APP_OPTIONS} from '../../common/common'
+    import {CodeToText, regionDataPlus, TextToCode} from 'element-china-area-data'
+    import {APP_OPTIONS, SERVICE_LEVEL, SLICE_TYPE} from '../../common/common'
     import moment from 'moment'
+
     export default {
         data () {
             return {
@@ -101,7 +102,7 @@
                     orderTime: '',
                     userList: '',
                     appList: '',
-                    fee: '',
+                    fee: 0,
                     areaList: ''
                 },
                 //addFormVisible: false, // 新增界面是否显示
@@ -135,7 +136,6 @@
         methods: {
             //通过label获取value
             getValueByLabel: function (name, label) {
-                console.log(name)
                 if (label === undefined || label === null) {
                     return ''
                 }
@@ -147,18 +147,40 @@
                 }
                 return ''
             },
+            getMoneyByLabel: function (name,label) {
+                if (label === undefined || label === null) {
+                    return ''
+                }
+                for (let i in name) {
+                    let e = name[i]
+                    if (e && e.label === label) {
+                        return e.money
+                    }
+                }
+                return ''
+            },
+            getFee: function () {
+                if(this.orderTime.length === 0){
+                    return 0;
+                }
+                let time = ((this.orderTime[1] - this.orderTime[0]) / (1000 * 60 * 60));
+                let level_money = this.getMoneyByLabel(this.serviceLevels, this.serviceLevelData);
+                let slice_money = this.getMoneyByLabel(this.sliceTypes,this.sliceTypeData);
+                this.addForm.fee = time * level_money * slice_money;
+            },
             orderTimeHandler() {
 
                 this.addForm.orderTime = moment(this.orderTime[0]).valueOf()
                     + '|' + moment(this.orderTime[1]).valueOf()
+                this.getFee();
             },
             handleLevel() {
                 this.addForm.serviceLevel = this.getValueByLabel(this.serviceLevels, this.serviceLevelData)
-                console.log(this.addForm.serviceLevel)
+                this.getFee();
             },
             handleType() {
                 this.addForm.sliceType = this.getValueByLabel(this.sliceTypes, this.sliceTypeData)
-                console.log(this.addForm.sliceType)
+                this.getFee();
             },
             handleChangeArea () {
                 let province = this.areaOptions[0];
