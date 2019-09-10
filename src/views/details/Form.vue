@@ -21,22 +21,42 @@
                 </el-radio>
             </el-radio-group>
         </el-form-item>
-        <el-form-item label="Order Time: " prop="orderTime" size="medium" >
+        <el-form-item label="Time: " prop="orderTime" size="medium" >
+            <el-radio-group v-model="timeType"  style="margin-left: 40px;" @change="timeDisplay">
+                <el-radio :label="0" >Time range</el-radio>
+                <el-radio :label="1">Duration</el-radio>
+            </el-radio-group>
             <el-date-picker
                     v-model="orderTime"
-                    type="daterange"
+                    v-show="orderTimeShow"
+                    type="datetimerange"
                     range-separator=" - "
                     start-placeholder="Start Time"
                     end-placeholder="End Time"
-                    style="margin-left: 40px; width: 100%;"
+                    style="margin-left: 40px; width: 100%; float: left"
                     @change="orderTimeHandler">
             </el-date-picker>
+            <el-tooltip v-show="durationTimeShow"
+                        content="Please note that your service will go into effect after you finish your order."
+                        placement="bottom"
+                        effect="dark">
+                <el-input placeholder="Input Duration Time"
+                          v-model="durationTime"
+                          style="margin-left: 40px; width: 100%; float: left"
+                          clearable
+                          @change="durationTimeHandler">
+                    <template slot="append">Minutes</template>
+                </el-input>
+            </el-tooltip>
         </el-form-item>
         <el-form-item label="Area List: " prop="areaList">
             <el-cascader
                     size="medium"
-                    :options="areaSelectData"
-                    v-model="areaOptions"
+                    :options="areaOptions"
+                    :props="cascadeProps"
+                    placeholder="Please select the area: Region / Province / City "
+                    clearable
+                    v-model="areaSelectData"
                     style="margin-left: 40px; width: 100%;"
                     @change="handleChangeArea">
             </el-cascader>
@@ -44,27 +64,29 @@
         <el-form-item label="User List: " prop="userList" size="medium">
             <!--todo: upload and parse-->
             <el-upload v-model="addForm.userList"
-                       class="upload-demo"
-                       action=""
-                       :file-list="fileList">
-                <el-button size="medium" type="primary" >up load</el-button>
-<!--                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                        class="upload-demo"
+                        ref="upload"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        :auto-upload="false">
+                <el-button slot="trigger" size="small" type="success">up load</el-button>
+<!--                <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+                <div slot="tip" class="el-upload__tip">only support .json and .xml，and no more than 500 KB</div>
             </el-upload>
         </el-form-item>
         <el-form-item label="Application List: " prop="appList" size="medium">
-            <el-select v-model="appSelectData"
-                       multiple
-                       collapse-tags
-                       placeholder="Choose Area List"
-                       style="margin-left: 40px; width: 100%;"
-                       @change="handleChangeApp">
-                <el-option
-                        v-for="item in appOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
+            <el-cascader
+                    size="medium"
+                    :options="appOptions"
+                    :props="cascadeProps"
+                    placeholder="Please select a list of supported apps"
+                    clearable
+                    v-model="appSelectData"
+                    style="margin-left: 40px; width: 100%;"
+                    @change="handleChangeApp">
+            </el-cascader>
         </el-form-item >
         <el-form-item label="fee: " prop="fee" size="medium">
             {{addForm.fee}}
@@ -78,28 +100,34 @@
 </template>
 
 <script>
-    import {CodeToText, regionDataPlus, TextToCode} from 'element-china-area-data'
-    import {APP_OPTIONS, SERVICE_LEVEL, SLICE_TYPE} from '../../common/common'
+    //import {CodeToText, regionDataPlus, TextToCode} from 'element-china-area-data'
+    import {APP_OPTIONS, SERVICE_LEVEL, SLICE_TYPE, AREA_OPTIONS} from '../../common/common'
     import moment from 'moment'
 
     export default {
         data () {
             return {
+                cascadeProps: { multiple: true },
                 isDisable: false,
                 serviceLevels: SERVICE_LEVEL,
                 serviceLevelData: 'Standard',
                 sliceTypes: SLICE_TYPE,
                 sliceTypeData: 'eMBB',
+                timeType: 0,
+                orderTimeShow: 0,
+                durationTimeShow: 0,
                 orderTime: [],
-                areaOptions: [],
+                durationTime: "",
+                areaOptions: AREA_OPTIONS,
                 appOptions: APP_OPTIONS,
                 appSelectData: [],
-                areaSelectData: regionDataPlus,
+                areaSelectData: [],
                 addForm: {
                     serviceName: '',
                     serviceLevel: 'STANDARD',
                     sliceType: 'EMBB',
                     orderTime: '',
+                    durationTime: 0,
                     userList: '',
                     appList: '',
                     fee: 0,
@@ -118,7 +146,7 @@
                         {required: true, message: 'please choose slice type', trigger: 'change'}
                     ],
                     orderTime: [
-                        {required: true, message: 'please choose order time', trigger: 'change'}
+                        //{required: true, message: 'please choose order time', trigger: 'change'}
                     ],
                     areaList: [
                         {required: true, message: 'please choose area region', trigger: 'change'}
@@ -134,6 +162,20 @@
             }
         },
         methods: {
+            handlePreview(){},
+            handleRemove(){},
+            timeDisplay() {
+                this.orderTimeShow = !this.timeType
+                this.durationTimeShow = this.timeType
+                if (this.timeType) {
+                    this.orderTime = []
+                    this.addForm.orderTime = ''
+                } else {
+                    this.durationTime = ''
+                    this.addForm.durationTime = 0
+                }
+                this.getFee();
+            },
             //通过label获取value
             getValueByLabel: function (name, label) {
                 if (label === undefined || label === null) {
@@ -160,18 +202,26 @@
                 return ''
             },
             getFee: function () {
-                if(this.orderTime.length === 0){
-                    return 0;
+                let time = 0;
+                if (this.timeType) {
+                    time = this.durationTime / 60;
+                } else {
+                    if(this.orderTime.length > 0) {
+                        time = ((this.orderTime[1] - this.orderTime[0]) / (1000 * 60 * 60));
+                    }
                 }
-                let time = ((this.orderTime[1] - this.orderTime[0]) / (1000 * 60 * 60));
+
                 let level_money = this.getMoneyByLabel(this.serviceLevels, this.serviceLevelData);
                 let slice_money = this.getMoneyByLabel(this.sliceTypes,this.sliceTypeData);
                 this.addForm.fee = time * level_money * slice_money;
             },
             orderTimeHandler() {
-
                 this.addForm.orderTime = moment(this.orderTime[0]).valueOf()
                     + '|' + moment(this.orderTime[1]).valueOf()
+                this.getFee();
+            },
+            durationTimeHandler() {
+                this.addForm.durationTime = this.durationTime
                 this.getFee();
             },
             handleLevel() {
@@ -182,37 +232,40 @@
                 this.addForm.sliceType = this.getValueByLabel(this.sliceTypes, this.sliceTypeData)
                 this.getFee();
             },
-            handleChangeArea () {
-                let province = this.areaOptions[0];
-                let city = this.areaOptions[1];
-                let area = this.areaOptions[2];
-                if (province !== undefined) {
-                    this.addForm.areaList = CodeToText[province] + ' ';
-                }
-                if (city !== undefined) {
-                    this.addForm.areaList += CodeToText[city] + ' ';
-                }
-                if (area !== undefined) {
-                    // 拼接公司详细地址
-                    this.addForm.areaList += CodeToText[area] + ' ';
-                }
-
-                // 由于上面将地址转为了字符串，所以在加载页面获取数据时，要重新将字符串转为数组。下面是对数据的处理
-                if(this.addForm.areaList) {
-                    let address = this.addForm.areaList.split(' ');
-                    // 省份
-                    this.areaOptions.push(TextToCode[address[0]].code);
-                    // 城市
-                    let cityCode = TextToCode[address[0]][address[1]].code;
-                    this.areaOptions.push(cityCode);
-                    // 地区
-                    let areaCode = TextToCode[address[0]][address[1]][address[2]].code;
-                    this.areaOptions.push(areaCode);
-                }
-            },
             handleChangeApp() {
+                console.log(this.appSelectData)
                 this.addForm.appList = this.appSelectData.join('|')
                 //console.log(this.addForm.appList)
+            },
+            handleChangeArea () {
+                console.log(this.areaSelectData)
+                this.addForm.areaList = this.areaSelectData.join('|')
+                // let province = this.areaOptions[0];
+                // let city = this.areaOptions[1];
+                // let area = this.areaOptions[2];
+                // if (province !== undefined) {
+                //     this.addForm.areaList = CodeToText[province] + ' ';
+                // }
+                // if (city !== undefined) {
+                //     this.addForm.areaList += CodeToText[city] + ' ';
+                // }
+                // if (area !== undefined) {
+                //     // 拼接公司详细地址
+                //     this.addForm.areaList += CodeToText[area] + ' ';
+                // }
+                //
+                // // 由于上面将地址转为了字符串，所以在加载页面获取数据时，要重新将字符串转为数组。下面是对数据的处理
+                // if(this.addForm.areaList) {
+                //     let address = this.addForm.areaList.split(' ');
+                //     // 省份
+                //     this.areaOptions.push(TextToCode[address[0]].code);
+                //     // 城市
+                //     let cityCode = TextToCode[address[0]][address[1]].code;
+                //     this.areaOptions.push(cityCode);
+                //     // 地区
+                //     let areaCode = TextToCode[address[0]][address[1]][address[2]].code;
+                //     this.areaOptions.push(areaCode);
+                // }
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
@@ -246,6 +299,9 @@
                 })
                 console.log('submit!')
             }
+        },
+        mounted () {
+            this.timeDisplay();
         }
     }
 
@@ -261,8 +317,10 @@
                 line-height: inherit;
                 .el-radio {
                     line-height: inherit;
+                    margin-right: 80px
                 }
             }
+            margin: 25px 0;
         }
     }
 </style>

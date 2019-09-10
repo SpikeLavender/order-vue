@@ -34,7 +34,7 @@
 <!--                    <img :src="this.sysUserAvatar"/> -->
                     {{sysUserName}}
                 </span>
-                <el-button type="text" @click.native="logout">Log out</el-button>
+                <el-button type="text" @click.native="logout" style="color: #FFFFFF">Log out</el-button>
             </el-col>
         </el-header>
         <el-col :span="24" class="main">
@@ -125,7 +125,7 @@
         .header {
             height: 60px;
             line-height: 60px;
-            background: #3B6CF1;
+            background: #409EFF;
             color: #fff;
 
             .logo {
@@ -139,7 +139,7 @@
                 text-align: center;
                 padding-left: 10px;
                 margin-left: 10px;
-                background: #3B6CF1;
+                background: #409EFF;
                 .el-menu-item {
                     padding: 0 70px;
                     font-size: 14px;
@@ -148,8 +148,16 @@
                     color: #FFFFFF;
                     opacity: 0.7;
                 }
+                :hover {
+                    background: #42b983;
+                    color: #FFFFFF;
+                }
                 .el-menu-item.is-active {
                     border-bottom: none;
+                    background: #42b983 !important;
+                    //border-bottom-color: #fc3f34 !important;
+                    opacity: 1;
+                    //border-bottom-color: transparent;
                 }
             }
 

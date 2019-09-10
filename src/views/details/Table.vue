@@ -21,24 +21,25 @@
             </el-table-column>
             <el-table-column prop="serviceName" label="Service Name" width="180" sortable>
             </el-table-column>
-            <el-table-column prop="serviceLevel" label="Service Level" width="140"  sortable>
+            <el-table-column prop="serviceType" label="Type" min-width="140" sortable>
+            </el-table-column>
+            <el-table-column prop="serviceLevel" label="Level" width="140"  sortable>
             </el-table-column>
             <el-table-column prop="sliceType" label="Slice Type" width="120" sortable>
             </el-table-column>
-            <el-table-column prop="orderTime" label="Order Time" width="180" :formatter="formatTime" sortable>
+            <el-table-column prop="orderTime" label="Time" width="180" :formatter="formatTime" sortable>
             </el-table-column>
-            <el-table-column prop="areaList" label="Area List" min-width="180" sortable>
+            <el-table-column prop="areaList" label="Area" min-width="180" sortable>
             </el-table-column>
-            <el-table-column prop="userList" label="User List" min-width="180" sortable>
+            <el-table-column prop="userList" label="User" min-width="180" sortable>
             </el-table-column>
-            <el-table-column prop="appList" label="Application List" min-width="180" sortable>
+            <el-table-column prop="appList" label="Application" min-width="180" sortable>
             </el-table-column>
             <el-table-column prop="fee" label="Fee" min-width="120" sortable>
             </el-table-column>
+            <el-table-column prop="orderStatus" label="State" min-width="130" sortable>
+            </el-table-column>
             <el-table-column label="Operation" width="150">
-                <template scope="scope">
-                    <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">running</el-button>
-                </template>
                 <template scope="scope">
                     <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">Delete</el-button>
                 </template>
