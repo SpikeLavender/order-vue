@@ -9,7 +9,7 @@
             <div>
                 <template>
                     <el-form ref="addForm" :model="addForm" :rules="addFormRules" label-width="200px"
-                             style="margin:auto;width:40%;min-width:400px;" class="demo-ruleForm">
+                             style="margin:auto;width:43%;min-width:400px;" class="demo-ruleForm">
                         <el-form-item label="Service Name: " prop="serviceName" size="medium">
                             <el-input v-model="addForm.serviceName" maxlength="30" show-word-limit
                                       style="margin-left: 40px; width: 100%;"></el-input>
@@ -458,7 +458,7 @@
                 line-height: inherit;
                 .el-radio {
                     line-height: inherit;
-                    margin-right: 50px
+                    margin-right: 40px
                 }
             }
             margin: 25px 0;
