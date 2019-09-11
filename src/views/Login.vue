@@ -1,10 +1,5 @@
 <template>
     <el-row class="container">
-<!--        <el-header :span="24" class="header">-->
-<!--            <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">-->
-<!--                {{collapsed?'':sysName}}-->
-<!--            </el-col>-->
-<!--        </el-header>-->
         <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px"
                  class="demo-ruleForm login-container">
             <h3 class="title">Login</h3>

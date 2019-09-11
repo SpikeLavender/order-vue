@@ -3,9 +3,8 @@
         <el-collapse-item name="form">
             <template slot="title" >
                 <span class="title-span">
-                    New Order
+                    New {{orderType}} Order
                 </span>
-
             </template>
             <div>
                 <template>
@@ -104,7 +103,6 @@
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click.native="onSubmit('addForm')" :loading="addLoading" :disabled="isDisable">Subscribe</el-button>
-                            <el-button @click.native.prevent = "resetForm('addForm')">Cancel</el-button>
                         </el-form-item>
                     </el-form>
                 </template>
@@ -190,6 +188,7 @@
     export default {
         data () {
             return {
+                orderType: '5G Private',
                 activeName: 'form',
                 //create page data
                 cascadeProps: { multiple: true },
@@ -216,7 +215,8 @@
                     userList: '',
                     appList: '',
                     fee: 0,
-                    areaList: ''
+                    areaList: '',
+                    serviceType: this.$store.state.serviceType
                 },
                 //addFormVisible: false, // 新增界面是否显示
                 addLoading: false,
@@ -255,27 +255,15 @@
                 size: 10,
                 listLoading: false,
                 sels: [], // 列表选中列
-
-                editFormVisible: false, // 编辑界面是否显示
-                editLoading: false,
-                editFormRules: {
-                    name: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
-                    ]
-                },
-                addFormVisible: false, // 新增界面是否显示
-                addLoading: false,
-                addFormRules: {
-                    name: [
-                        { required: true, message: '请输入姓名', trigger: 'blur' }
-                    ]
-                }
             }
         },
         methods: {
             //create order page func
-            handlePreview(){},
-            handleRemove(){},
+            getOrderType() {
+                this.orderType = this.$store.state.orderType
+            },
+            handlePreview() {},
+            handleRemove() {},
             timeDisplay() {
                 this.orderTimeShow = !this.timeType
                 this.durationTimeShow = this.timeType
@@ -345,12 +333,10 @@
                 this.getFee();
             },
             handleChangeApp() {
-                console.log(this.appSelectData)
                 this.addForm.appList = this.appSelectData.join('|')
                 //console.log(this.addForm.appList)
             },
             handleChangeArea () {
-                console.log(this.areaSelectData)
                 this.addForm.areaList = this.areaSelectData.join('|')
             },
             resetForm(formName) {
@@ -365,7 +351,6 @@
                         message: 'create order success',
                         type: 'success'
                     })
-                    console.log(this.addForm.fee)
                     this.addForm.fee = res.data.fee
                     await this.$router.push({ path: '/main' })
                 }
@@ -373,17 +358,16 @@
             onSubmit (formName) {
                 //this.listLoading = true
                 this.$refs[formName].validate((valid) => {
+                    console.log(this.addFormRules)
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addLoading = true
                             let data = Object.assign({}, this.addForm)
-                            console.log(data)
                             this.createOrder(data)
                             this.addLoading = false
                         })
                     }
                 })
-                console.log('submit!')
             },
 
             //order list page func
@@ -442,6 +426,7 @@
         },
         mounted () {
             this.timeDisplay();
+            this.getOrderType();
         }
     }
 </script>

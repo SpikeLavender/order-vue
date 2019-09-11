@@ -8,12 +8,17 @@
 </template>
 
 <script>
+    import {mapMutations} from "vuex";
+
     export default {
         methods: {
+            ...mapMutations(['setServiceType']),
             orderPri5G() {
-
+                this.setServiceType({ serviceType: "PRIVATE",  orderType: "5G Private"})
+                this.$router.push({ path: '/form' })
             },
             orderSha5G() {
+                this.setServiceType({ serviceType: "SHARED", orderType: "5G Shared"})
                 this.$router.push({ path: '/form' })
             }
         }
