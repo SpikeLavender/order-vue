@@ -458,7 +458,7 @@
                 line-height: inherit;
                 .el-radio {
                     line-height: inherit;
-                    margin-right: 80px
+                    margin-right: 50px
                 }
             }
             margin: 25px 0;
