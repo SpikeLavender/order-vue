@@ -183,7 +183,7 @@
                                             start-placeholder="Start Time"
                                             end-placeholder="End Time"
                                             style="margin-left: 40px; width: 100%; float: left"
-                                            @change="orderTimeHandler">
+                                            @change="activeTimeHandler">
                                     </el-date-picker>
                                     <el-tooltip v-show="durationTimeShow"
                                                 content="Please note that your service will go into effect after you finish your order."
@@ -240,7 +240,6 @@
                     serviceLevel: 'STANDARD',
                     sliceType: 'EMBB',
                     orderTime: '',
-                    durationTime: 0,
                     appList: '',
                     fee: 0,
                     areaList: '',
@@ -358,10 +357,6 @@
                     + '|' + moment(this.orderTime[1]).valueOf()
                 this.getFee();
             },
-            durationTimeHandler() {
-                this.addForm.durationTime = this.durationTime
-                this.getFee();
-            },
             handleLevel() {
                 this.addForm.serviceLevel = this.getValueByLabel(this.serviceLevels, this.serviceLevelData)
                 this.getFee();
@@ -434,7 +429,6 @@
             },
             onSubmitActive(formName) {
                 this.$refs[formName].validate((valid) => {
-                    console.log(this.addFormRules)
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.activeLoading = true
@@ -482,6 +476,13 @@
                     }
                 }
                 return '';
+            },
+            activeTimeHandler() {
+                this.addActiveForm.activeTime = moment(this.activeTime[0]).valueOf()
+                    + '|' + moment(this.activeTime[1]).valueOf()
+            },
+            durationTimeHandler() {
+                this.addActiveForm.activeDuration = this.activeDuration
             },
             // 显示新增界面
             // handleAdd: function () {
