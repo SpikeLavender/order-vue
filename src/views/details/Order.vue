@@ -31,32 +31,15 @@
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="Time: " prop="orderTime" size="medium" >
-                            <el-radio-group v-model="timeType"  style="margin-left: 40px;" @change="timeDisplay">
-                                <el-radio :label="0" >Time range</el-radio>
-                                <el-radio :label="1">Duration</el-radio>
-                            </el-radio-group>
                             <el-date-picker
                                     v-model="orderTime"
-                                    v-show="orderTimeShow"
-                                    type="datetimerange"
+                                    type="daterange"
                                     range-separator=" - "
                                     start-placeholder="Start Time"
                                     end-placeholder="End Time"
                                     style="margin-left: 40px; width: 100%; float: left"
                                     @change="orderTimeHandler">
                             </el-date-picker>
-                            <el-tooltip v-show="durationTimeShow"
-                                        content="Please note that your service will go into effect after you finish your order."
-                                        placement="bottom"
-                                        effect="dark">
-                                <el-input placeholder="Input Duration Time"
-                                          v-model="durationTime"
-                                          style="margin-left: 40px; width: 100%; float: left"
-                                          clearable
-                                          @change="durationTimeHandler">
-                                    <template slot="append">Minutes</template>
-                                </el-input>
-                            </el-tooltip>
                         </el-form-item>
                         <el-form-item label="Area List: " prop="areaList">
                             <el-cascader
@@ -69,21 +52,6 @@
                                     style="margin-left: 40px; width: 100%;"
                                     @change="handleChangeArea">
                             </el-cascader>
-                        </el-form-item>
-                        <el-form-item label="User List: " prop="userList" size="medium">
-                            <!--todo: upload and parse-->
-                            <el-upload v-model="addForm.userList"
-                                       class="upload-demo"
-                                       ref="upload"
-                                       action="https://jsonplaceholder.typicode.com/posts/"
-                                       :on-preview="handlePreview"
-                                       :on-remove="handleRemove"
-                                       :file-list="fileList"
-                                       :auto-upload="false">
-                                <el-button slot="trigger" size="small" type="success">up load</el-button>
-                                <!--                <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
-                                <div slot="tip" class="el-upload__tip">only support .json and .xml，and no more than 500 KB</div>
-                            </el-upload>
                         </el-form-item>
                         <el-form-item label="Application List: " prop="appList" size="medium">
                             <el-cascader
@@ -130,8 +98,32 @@
                         </el-col>
 
                         <!--列表-->
-                        <el-table :data="orders" highlight-current-row v-loading="listLoading" @selection-change="selsChange"
+                        <el-table :data="orders"
+                                  highlight-current-row
+                                  v-loading="listLoading"
+                                  lazy
+                                  @selection-change="selsChange"
                                   style="width: 100%;">
+                            <el-table-column type="expand">
+                                <template slot-scope="orders">
+                                    <el-table :data="orders.row.activeEvents"
+                                              :fit=true
+                                              class="demo-table-expand"
+                                              :cell-style="activeStatusStyle"
+                                              style="font-style: italic;">
+                                        <el-table-column type="selection" width="55" prop="id">
+                                        </el-table-column>
+                                        <el-table-column type="index" width="60">
+                                        </el-table-column>
+                                        <el-table-column prop="startTime" label="StartTime" width="490">
+                                        </el-table-column>
+                                        <el-table-column prop="endTime" label="EndTime" >
+                                        </el-table-column>
+                                        <el-table-column prop="activeStatus" label="Active Status">
+                                        </el-table-column>
+                                    </el-table>
+                                </template>
+                            </el-table-column>
                             <el-table-column type="selection" width="55" prop="id">
                             </el-table-column>
                             <el-table-column type="index" width="60">
@@ -148,17 +140,17 @@
                             </el-table-column>
                             <el-table-column prop="areaList" label="Area" min-width="180" sortable>
                             </el-table-column>
-                            <el-table-column prop="userList" label="User" min-width="180" sortable>
-                            </el-table-column>
+<!--                            <el-table-column prop="userList" label="User" min-width="180" sortable>-->
+<!--                            </el-table-column>-->
                             <el-table-column prop="appList" label="Application" min-width="180" sortable>
                             </el-table-column>
                             <el-table-column prop="fee" label="Fee" min-width="120" sortable>
                             </el-table-column>
                             <el-table-column prop="orderStatus" label="State" min-width="130" sortable>
                             </el-table-column>
-                            <el-table-column label="Operation" width="150">
+                            <el-table-column label="Operation" width="250">
                                 <template scope="scope">
-                                    <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">Delete</el-button>
+                                    <el-button type="primary" size="small" @click="handleDetails(scope.$index, scope.row)">Add Active Events</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -174,6 +166,44 @@
                                            style="float:right;">
                             </el-pagination>
                         </el-col>
+
+                        <el-dialog title="Add Active Events" :visible.sync="activeFormVisible" :close-on-click-modal="true">
+                            <el-form ref="addActiveForm" :model="addActiveForm" label-width="0px"
+                                     style="margin:auto;width:80%;min-width:400px;" class="demo-ruleForm">
+                                <el-form-item prop="orderTime" size="medium" >
+                                    <el-radio-group v-model="timeType"  style="margin-left: 40px;" @change="timeDisplay">
+                                        <el-radio :label="0" >Time range</el-radio>
+                                        <el-radio :label="1">Duration</el-radio>
+                                    </el-radio-group>
+                                    <el-date-picker
+                                            v-model="activeTime"
+                                            v-show="orderTimeShow"
+                                            type="datetimerange"
+                                            range-separator=" - "
+                                            start-placeholder="Start Time"
+                                            end-placeholder="End Time"
+                                            style="margin-left: 40px; width: 100%; float: left"
+                                            @change="orderTimeHandler">
+                                    </el-date-picker>
+                                    <el-tooltip v-show="durationTimeShow"
+                                                content="Please note that your service will go into effect after you finish your order."
+                                                placement="bottom"
+                                                effect="dark">
+                                        <el-input placeholder="Input Duration Time"
+                                                  v-model="activeDuration"
+                                                  style="margin-left: 40px; width: 100%; float: left"
+                                                  clearable
+                                                  @change="durationTimeHandler">
+                                            <template slot="append">Minutes</template>
+                                        </el-input>
+                                    </el-tooltip>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" @click.native="onSubmitActive('addActiveForm')"
+                                               :loading="activeLoading" :disabled="isDisable">Subscribe</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-dialog>
                     </section>
                 </template>
             </div>
@@ -201,7 +231,6 @@
                 orderTimeShow: 0,
                 durationTimeShow: 0,
                 orderTime: [],
-                durationTime: "",
                 areaOptions: AREA_OPTIONS,
                 appOptions: APP_OPTIONS,
                 appSelectData: [],
@@ -212,12 +241,19 @@
                     sliceType: 'EMBB',
                     orderTime: '',
                     durationTime: 0,
-                    userList: '',
                     appList: '',
                     fee: 0,
                     areaList: '',
                     serviceType: this.$store.state.serviceType
                 },
+                addActiveForm: {
+                    orderId: -1,
+                    activeDuration: 0,
+                    activeTime: ''
+                },
+                activeLoading: false,
+                activeDuration: "",
+                activeTime: [],
                 //addFormVisible: false, // 新增界面是否显示
                 addLoading: false,
                 addFormRules: {
@@ -250,11 +286,13 @@
                     name: ''
                 },
                 orders: [],
+                activeEvents: [],
                 total: 0,
                 page: 1,
                 size: 10,
                 listLoading: false,
                 sels: [], // 列表选中列
+                activeFormVisible: false,
             }
         },
         methods: {
@@ -268,13 +306,13 @@
                 this.orderTimeShow = !this.timeType
                 this.durationTimeShow = this.timeType
                 if (this.timeType) {
-                    this.orderTime = []
-                    this.addForm.orderTime = ''
+                    this.activeTime = []
+                    this.addActiveForm.activeTime = ''
                 } else {
-                    this.durationTime = ''
-                    this.addForm.durationTime = 0
+                    this.activeDuration = ''
+                    this.addActiveForm.activeDuration = 0
                 }
-                this.getFee();
+                //this.getFee();
             },
             //通过label获取value
             getValueByLabel: function (name, label) {
@@ -371,6 +409,42 @@
             },
 
             //order list page func
+            async createActive(data) {
+                let res = await this.$Http.activeOrder(data, false, {}, {
+                    "orderId": data.orderId
+                })
+                console.log(res)
+                //todo: 异常处理
+                if (res !== undefined) {
+                    console.log(res)
+                    if (res.statusCode === 200) {
+                        this.$message({
+                            message: 'create active events success',
+                            type: 'success'
+                        })
+                        this.getOrders();
+                        this.activeFormVisible = false;
+                    }else {
+                        this.$message({
+                            message: res.message,
+                            type: 'error'
+                        })
+                    }
+                }
+            },
+            onSubmitActive(formName) {
+                this.$refs[formName].validate((valid) => {
+                    console.log(this.addFormRules)
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            this.activeLoading = true
+                            let data = Object.assign({}, this.addActiveForm)
+                            this.createActive(data)
+                            this.activeLoading = false
+                        })
+                    }
+                })
+            },
             formatTime: function (row, column) {
                 let orderTime = row.orderTime.split('|')
                 return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[0]/1).format('YYYY-MM-DD')
@@ -393,20 +467,33 @@
                 }
             },
             // 删除
-            handleDel: function (index, row) {
-                this.$confirm('确认删除该记录吗?', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.listLoading = true
-                    let para = { id: row.id }
-                    console.log(row.id)
-
-                    // todo: 删除和批量删除接口
-
-                }).catch(() => {
-
-                })
+            handleDetails: function (index, row) {
+                this.activeFormVisible = true
+                this.addActiveForm.orderId = row.id;
             },
+            activeStatusStyle({row, column, rowIndex, columnIndex}) {
+                if (columnIndex === 4) {
+                    if (row.activeStatus === "STOPPED") {
+                        return 'color: #fd484e';
+                    } else if (row.activeStatus === "RUNNING") {
+                        return 'color: #2c0bf9';
+                    } else if (row.activeStatus === "WAITING") {
+                        return 'color: #6bf9d1';
+                    }
+                }
+                return '';
+            },
+            // 显示新增界面
+            // handleAdd: function () {
+            //     this.addFormVisible = true
+            //     this.addForm = {
+            //         name: '',
+            //         sex: -1,
+            //         age: 0,
+            //         birth: '',
+            //         addr: ''
+            //     }
+            // },
             selsChange: function (sels) {
                 this.sels = sels
             },
@@ -432,6 +519,15 @@
 </script>
 
 <style scoped lang="less">
+
+    .el-table .warning-row {
+        background: #fd484e;
+    }
+
+    .el-table .success-row {
+        background: #2c0bf9;
+    }
+
     .order-container {
         border: none;
         .el-collapse-item {
