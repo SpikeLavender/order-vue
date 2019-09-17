@@ -9,6 +9,11 @@ const ORDER_API = {
         method: 'post',
         url: '/5g-orders'
     },
+    //创建订单
+    activeOrder: {
+        method: 'post',
+        url: '/5g-orders/{orderId}/active',
+    },
     //登录
     login: {
         method: 'post',

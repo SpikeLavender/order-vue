@@ -18,7 +18,8 @@ for (let key in service) {
     Http[key] = async function(
         params, //请求参数 get: url, post/put/patch: data, delete: url
         isFormData=false, //标识是否是form-data请求
-        config={} //配置参数
+        config={}, //配置参数
+        pathParams={} //路径变量
     ) {
         let newParams = {}
         //content-type是否是form-data判断
@@ -30,18 +31,24 @@ for (let key in service) {
         } else {
             newParams = params
         }
+        //处理url路径中的变量
+        let url = api.url
+        for (let key in pathParams) {
+            let reg = "/{"+key+"}/g";
+            url = url.replace(eval(reg), pathParams[key]);
+        }
         //不同请求的判断
         let response = {}; //请求的返回值
         if (api.method === 'post' || api.method === 'put' || api.method === 'patch') {
             try {
-                response = await instance[api.method](api.url, newParams, config)
+                response = await instance[api.method](url, newParams, config)
             }catch (err) {
                 response = err
             }
         } else if (api.method === 'delete' || api.method === 'get') {
             config.params = newParams
             try {
-                response = await instance[api.method](api.url, config)
+                response = await instance[api.method](url, config)
             }catch (err) {
                 response = err
             }
@@ -69,6 +76,7 @@ instance.interceptors.response.use(res => {
     //请求成功
     console.log(res.data)
     let statusCode = parseInt(res.data.statusCode)
+    console.log(statusCode)
     if (statusCode < 200 && statusCode >= 500) {
         console.log("htj" + res.data)
         Message( {
@@ -78,7 +86,7 @@ instance.interceptors.response.use(res => {
             type: "error",
             offset: 20
         })
-    } else if (res.status === 401 || statusCode === 401) {
+    } else if (res.status === 401 || statusCode === 401001) {
         localStorage.removeItem('Authorization');
         localStorage.removeItem('username');
         this.$router.push('/login').then(res => {
