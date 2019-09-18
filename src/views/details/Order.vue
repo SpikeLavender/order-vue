@@ -438,13 +438,13 @@
                 })
             },
             formatUTCTime: function (row, column) {
-                console.log(moment(row[column.property]))
-                console.log(moment(row[column.property]).format("YYYY-MM-DD HH:mm:SS"))
-                return moment(row[column.property]).format("YYYY-MM-DD HH:mm:SS")
+                //console.log(moment(row[column.property]))
+                //console.log(moment(row[column.property]).format("YYYY-MM-DD HH:mm:ss"))
+                return moment(row[column.property]).format("YYYY-MM-DD HH:mm:ss")
             },
             formatTime: function (row, column) {
                 let orderTime = row[column.property].split('|')
-                return moment(orderTime[0]/1).format('YYYY-MM-DD HH:mm:SS') + ' - ' + moment(orderTime[1]/1).format('YYYY-MM-DD HH:mm:SS')
+                return moment(orderTime[0]/1).format('YYYY-MM-DD HH:mm:ss') + ' - ' + moment(orderTime[1]/1).format('YYYY-MM-DD HH:mm:ss')
             },
             handleCurrentChange (val) {
                 this.page = val;
