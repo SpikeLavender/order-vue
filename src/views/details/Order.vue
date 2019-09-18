@@ -442,7 +442,7 @@
             },
             formatTime: function (row, column) {
                 let orderTime = row[column.property].split('|')
-                return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[0]/1).format('YYYY-MM-DD')
+                return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[1]/1).format('YYYY-MM-DD')
             },
             handleCurrentChange (val) {
                 this.page = val;
