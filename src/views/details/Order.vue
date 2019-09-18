@@ -33,7 +33,7 @@
                         <el-form-item label="Time: " prop="orderTime" size="medium" >
                             <el-date-picker
                                     v-model="orderTime"
-                                    type="daterange"
+                                    type="datetimerange"
                                     range-separator=" - "
                                     start-placeholder="Start Time"
                                     end-placeholder="End Time"
