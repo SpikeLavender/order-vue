@@ -115,9 +115,9 @@
                                         </el-table-column>
                                         <el-table-column type="index" width="60">
                                         </el-table-column>
-                                        <el-table-column prop="startTime" label="StartTime" width="490">
+                                        <el-table-column prop="startTime" label="StartTime" width="490" :formatter="formatUTCTime">
                                         </el-table-column>
-                                        <el-table-column prop="endTime" label="EndTime" >
+                                        <el-table-column prop="endTime" label="EndTime" :formatter="formatUTCTime">
                                         </el-table-column>
                                         <el-table-column prop="activeStatus" label="Active Status">
                                         </el-table-column>
@@ -379,7 +379,6 @@
                 let res = await this.$Http.createOrder(data)
                 //todo: 异常处理
                 if (res !== undefined) {
-                    console.log(res)
                     this.$message({
                         message: 'create order success',
                         type: 'success'
@@ -391,7 +390,6 @@
             onSubmit (formName) {
                 //this.listLoading = true
                 this.$refs[formName].validate((valid) => {
-                    console.log(this.addFormRules)
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addLoading = true
@@ -439,9 +437,12 @@
                     }
                 })
             },
+            formatUTCTime: function (row, column) {
+                return moment(row[column.property]).format("YYYY-MM-DD HH:MM:SS")
+            },
             formatTime: function (row, column) {
-                let orderTime = row.orderTime.split('|')
-                return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[0]/1).format('YYYY-MM-DD')
+                let orderTime = row[column.property].split('|')
+                return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[1]/1).format('YYYY-MM-DD')
             },
             handleCurrentChange (val) {
                 this.page = val;
@@ -456,6 +457,16 @@
                 let res = await this.$Http.getOrders(data);
                 //todo: 异常处理
                 if (res !== undefined) {
+                    // console.log(res.data.orderInfoList)
+                    // let resData = res.data.orderInfoList
+                    // for (let order in resData) {
+                    //     let
+                    //     for (let active in resData[order].activeEvents) {
+                    //         active.startTime = moment(active.startTime).format('YYYY-MM-DD HH:MM:SS')
+                    //         active.endTime = moment(active.endTime).format('YYYY-MM-DD HH:MM:SS')
+                    //         console.log(active.startTime)
+                    //     }
+                    // }
                     this.orders = res.data.orderInfoList;
                     this.total = res.data.total;
                 }
@@ -515,6 +526,7 @@
         mounted () {
             this.timeDisplay();
             this.getOrderType();
+            console.log(moment("2019-08-22T07:48:23.000+0000").format('YYYY-MM-DD HH:MM:SS'))
         }
     }
 </script>
