@@ -128,7 +128,7 @@
                             </el-table-column>
                             <el-table-column type="index" width="60">
                             </el-table-column>
-                            <el-table-column prop="serviceName" label="Service Name" width="180" sortable>
+                            <el-table-column prop="serviceName" label="Service Name" width="140" sortable>
                             </el-table-column>
                             <el-table-column prop="serviceType" label="Type" min-width="140" sortable>
                             </el-table-column>
@@ -136,7 +136,7 @@
                             </el-table-column>
                             <el-table-column prop="sliceType" label="Slice Type" width="120" sortable>
                             </el-table-column>
-                            <el-table-column prop="orderTime" label="Time" width="180" :formatter="formatTime" sortable>
+                            <el-table-column prop="orderTime" label="Time" width="300" :formatter="formatTime" sortable>
                             </el-table-column>
                             <el-table-column prop="areaList" label="Area" min-width="180" sortable>
                             </el-table-column>
@@ -146,9 +146,9 @@
                             </el-table-column>
                             <el-table-column prop="fee" label="Fee" min-width="120" sortable>
                             </el-table-column>
-                            <el-table-column prop="orderStatus" label="State" min-width="130" sortable>
+                            <el-table-column prop="orderStatus" label="State" min-width="120" sortable>
                             </el-table-column>
-                            <el-table-column label="Operation" width="250">
+                            <el-table-column label="Operation" width="180">
                                 <template scope="scope">
                                     <el-button type="primary" size="small" @click="handleDetails(scope.$index, scope.row)">Add Active Events</el-button>
                                 </template>
@@ -438,11 +438,13 @@
                 })
             },
             formatUTCTime: function (row, column) {
-                return moment(row[column.property]).format("YYYY-MM-DD HH:MM:SS")
+                console.log(moment(row[column.property]))
+                console.log(moment(row[column.property]).format("YYYY-MM-DD HH:mm:SS"))
+                return moment(row[column.property]).format("YYYY-MM-DD HH:mm:SS")
             },
             formatTime: function (row, column) {
                 let orderTime = row[column.property].split('|')
-                return moment(orderTime[0]/1).format('YYYY-MM-DD') + ' - ' + moment(orderTime[1]/1).format('YYYY-MM-DD')
+                return moment(orderTime[0]/1).format('YYYY-MM-DD HH:mm:SS') + ' - ' + moment(orderTime[1]/1).format('YYYY-MM-DD HH:mm:SS')
             },
             handleCurrentChange (val) {
                 this.page = val;
@@ -526,7 +528,6 @@
         mounted () {
             this.timeDisplay();
             this.getOrderType();
-            console.log(moment("2019-08-22T07:48:23.000+0000").format('YYYY-MM-DD HH:MM:SS'))
         }
     }
 </script>
